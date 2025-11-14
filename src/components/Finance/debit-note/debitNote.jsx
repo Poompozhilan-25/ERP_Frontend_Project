@@ -151,21 +151,21 @@ export default function DebitNote({ setCurrentPage }) {
             </select>
           </div>
           <div className="debitNote-input-box">
-            <label htmlFor="payment_status">Payment Status</label>
+            <label htmlFor="supplier_name">Supplier Name</label>
             <select
-              id="payment_status"
-              value={filter.payment_status}
+              id="supplier_name"
+              value={filter.supplier_name}
               onChange={(e) => {
                 setFilter((prev) => ({
                   ...prev,
-                  payment_status: e.target.value,
+                  supplier_name: e.target.value,
                 }));
               }}
             >
-              <option value="">All Types</option>
-              <option value="Paid">Paid</option>
-              <option value="Partial">Partial</option>
-              <option value="Unpaid">Unpaid</option>
+              <option value="">All</option>
+              <option value="acmeCorp">Acme Corp</option>
+              <option value="freelancerWriter">Freelance writer</option>
+              <option value="greenIntitatives">Green Intitatives</option>
             </select>
           </div>
           <div className="debitNote-input-box">
@@ -209,10 +209,10 @@ export default function DebitNote({ setCurrentPage }) {
               <tr>
                 <th></th>
                 <th>
-                  <pre>CRN ID</pre>
+                  <pre>DBN ID</pre>
                 </th>
                 <th>
-                  <pre>PO Ref</pre>
+                  <pre>PO Ref ID</pre>
                 </th>
                 <th>
                   <pre>Supplier Name</pre>

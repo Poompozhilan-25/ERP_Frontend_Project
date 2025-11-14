@@ -27,6 +27,7 @@ export default function App() {
         <Route path="/sign-in" element={<Signin />} />
         <Route path="/sign-up" element={<Signup />} />
         <Route path="/" element={<UserDashboard />} />
+        <Route path="/dashboard" element={<UserDashboard />} />
         <Route path="/bug-detalis/:errorId" element={<BugDetailPage />} />
         <Route path="/add-new-candidate" element={<AddNewCandidate />} />
         <Route

@@ -44,6 +44,8 @@ import CreditNote from "../../Finance/credit-note/creditNote";
 import CreditNoteDetails from "../../Finance/credit-note/creditNote-details";
 import DebitNote from "../../Finance/debit-note/debitNote";
 import DebitNoteDetails from "../../Finance/debit-note/debitNote-details";
+import SupplierPage from "../../Masters/Supplier/supplierPage.jsx"
+import CreateNewSupplier from "../../Masters/create-new-supplier/createNewSupplier.jsx"
 
 export default function body({
   expanded,
@@ -142,9 +144,9 @@ export default function body({
             className="profile-logo"
             onClick={() => setShowUserDetails((prev) => !prev)}
           >
-            {user.profilePic === true ? (
-              <img src={user.profilePic} alt="user Profile" />
-            ) : (
+            {user?.profile_pic ? (
+              <img src={user.profile_pic} alt="user Profile" />
+            )  : (
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                 <path d="M304 128a80 80 0 1 0 -160 0 80 80 0 1 0 160 0zM96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM49.3 464l349.5 0c-8.9-63.3-63.3-112-129-112l-91.4 0c-65.7 0-120.1 48.7-129 112zM0 482.3C0 383.8 79.8 304 178.3 304l91.4 0C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7L29.7 512C13.3 512 0 498.7 0 482.3z" />
               </svg>
@@ -219,6 +221,12 @@ export default function body({
         ) : currentPage == "createNewPurchase" ? (
           <CreateNewPurchase />
         ) : currentPage == "editPurchase" ? (
+          <EditPurchase />
+        ) : currentPage == "supplierPage" ? (
+          <SupplierPage setCurrentPage={setCurrentPage} />
+        ) : currentPage == "createNewSupplier" ? (
+          <CreateNewSupplier />
+        ) : currentPage == "editSupplier" ? (
           <EditPurchase />
         ) : currentPage == "stockReceipt" ? (
           <StockReceipt setCurrentPage={setCurrentPage} />

@@ -153,19 +153,19 @@ export default function CreditNote({ setCurrentPage }) {
           <div className="creditNote-input-box">
             <label htmlFor="payment_status">Customer Name</label>
             <select
-              id="payment_status"
-              value={filter.payment_status}
+              id="customer_name"
+              value={filter.customer_name}
               onChange={(e) => {
                 setFilter((prev) => ({
                   ...prev,
-                  payment_status: e.target.value,
+                  customer_name: e.target.value,
                 }));
               }}
             >
               <option value="">All</option>
-              <option value="Paid">Acme Corp</option>
-              <option value="Partial">Freelance writer</option>
-              <option value="Unpaid">Green Intitatives</option>
+              <option value="acmeCorp">Acme Corp</option>
+              <option value="freelancerWriter">Freelance writer</option>
+              <option value="greenIntitatives">Green Intitatives</option>
             </select>
           </div>
           <div className="creditNote-input-box">
