@@ -438,7 +438,6 @@ const handleDelete = async (user) => {
                 </svg>
               </label>
             </div>
-
             <button onClick={() => setshowCreateUser(true)}>+ Create New User</button>
           </div>
         </div>

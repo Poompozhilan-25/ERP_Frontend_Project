@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./createNewSupplier.css";
-import SupplierListItem from "./SupplierListItem";
+// import SupplierListItem from "./SupplierListItem";
 import SupplierComment from "./SupplierComment";
 import SupplierHistory from "./SupplierHistory";
 import SupplierAttachment from "./SupplierAttachment";
