@@ -24,7 +24,7 @@ export default function App() {
     <BrowserRouter>
       <ToastContainer position="top-right" autoClose={3000} />
       <Routes>
-        <Route path="/sign-in" element={<Signin />} />
+        <Route path="/signin" element={<Signin />} />
         <Route path="/sign-up" element={<Signup />} />
         <Route path="/" element={<UserDashboard />} />
         <Route path="/dashboard" element={<UserDashboard />} />

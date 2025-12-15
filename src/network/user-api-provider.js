@@ -1,402 +1,135 @@
-import ApiClient from "@/network/api-client";
-import notification from "@/utills/notification";
+import ApiClient from "./api-client";
+import { toast } from "react-toastify";
 
 class UserApiProvider {
-  // ===========================
-  // WEBPAGE
-  // ===========================
-  async fetchWebpage() {
-    try {
-      const result = await ApiClient.get("/webPage");
-      const statusCode = result.status ?? 0;
-      const message = result.data?.message ?? "Something went wrong";
+  // =====================================================
+  // FETCH LISTS (Branches, Departments, Roles, Users)
+  // =====================================================
 
-      if (statusCode === 200 || statusCode === 201) {
-        return result;
-      } else {
-        notification.showAlertNotification(message, false);
-        return null;
-      }
+  async fetchBranches() {
+    try {
+      const res = await ApiClient.get("/masters/branches/");
+      if (res.status === 200) return res.data;
+
+      toast.error("Failed to load branches");
+      return [];
     } catch (error) {
-      notification.showAxiosErrorAlert(error);
-      return null;
+      toast.error(error?.response?.data?.message || "Error loading branches");
+      return [];
     }
   }
 
-  // ===========================
-  // ROLE
-  // ===========================
-
-  async createRole(data) {
+  async fetchDepartments() {
     try {
-      const result = await ApiClient.post("/customer/role", data);
-      const statusCode = result.status ?? 0;
-      let message = result.data?.message ?? "Something went wrong";
+      const res = await ApiClient.get("/masters/departments/");
+      if (res.status === 200) return res.data.departments ?? [];
 
-      if (statusCode === 200 || statusCode === 201) {
-        message = "Role created successfully";
-        notification.showAlertNotification(message, true);
-        return result;
-      } else {
-        notification.showAlertNotification(message, false);
-        return null;
-      }
+      toast.error("Failed to load departments");
+      return [];
     } catch (error) {
-      notification.showAxiosErrorAlert(error);
-      return null;
+      toast.error(error?.response?.data?.message || "Error loading departments");
+      return [];
     }
   }
 
-  async fetchRoleData(params) {
+  async fetchRoles(departmentId = null) {
     try {
-      const result = await ApiClient.get("/customer/role", { params });
-      const statusCode = result.status ?? 0;
-      const message = result.data?.message ?? "Something went wrong";
+      const url = departmentId
+        ? `/masters/roles/?department=${departmentId}`
+        : `/masters/roles/`;
 
-      if (statusCode === 200 || statusCode === 201) {
-        return result;
-      } else {
-        notification.showAlertNotification(message, false);
-        return null;
-      }
+      const res = await ApiClient.get(url);
+
+      if (res.status === 200) return res.data.roles ?? res.data;
+
+      toast.error("Failed to load roles");
+      return [];
     } catch (error) {
-      notification.showAxiosErrorAlert(error);
-      return null;
+      toast.error(error?.response?.data?.message || "Error loading roles");
+      return [];
     }
   }
 
-  async updateRole(data) {
-    try {
-      const result = await ApiClient.put("/customer/role", data);
-      const statusCode = result.status ?? 0;
-      let message = result.data?.message ?? "Something went wrong";
+ async fetchUsers(page = 1, search = "") {
+  try {
+    console.log("Fetching users with page:", page, "search:", search);
 
-      if (statusCode === 200 || statusCode === 201) {
-        message = "Role updated successfully";
-        notification.showAlertNotification(message, true);
-        return result;
-      } else {
-        notification.showAlertNotification(message, false);
-        return null;
-      }
-    } catch (error) {
-      notification.showAxiosErrorAlert(error);
-      return null;
-    }
+    const res = await ApiClient.get("/masters/users/", {
+      params: { page, search }
+    });
+
+    if (res.status === 200) return res.data;
+
+    toast.error("Failed to load users");
+    return { users: [], total_pages: 1, current_page: 1 };
+  } catch (error) {
+    toast.error(error?.response?.data?.message || "Error loading users");
+    return { users: [], total_pages: 1, current_page: 1 };
   }
+}
 
-  // ===========================
-  // USER CRUD
-  // ===========================
 
-  async fetchUser(params, signal) {
-    try {
-      const result = await ApiClient.get("/customer/user", {
-        params,
-        signal,
-      });
 
-      const statusCode = result.status ?? 0;
-      const message = result.data?.message ?? "Something went wrong";
-
-      if (statusCode === 200 || statusCode === 201) {
-        return result;
-      } else {
-        notification.showAlertNotification(message, false);
-        return null;
-      }
-    } catch (error) {
-      if (signal?.aborted) {
-        console.warn("Previous Request Was Canceled");
-      } else {
-        notification.showAxiosErrorAlert(error);
-      }
-      return null;
-    }
-  }
+  // =====================================================
+  // CREATE USER
+  // =====================================================
 
   async createUser(data) {
     try {
-      const result = await ApiClient.post("/masters/users/", data);
-      const statusCode = result.status ?? 0;
+      const res = await ApiClient.post("/masters/users/", data);
 
-      let message = result.data?.message ?? "Something went wrong";
-
-      if (statusCode === 200 || statusCode === 201) {
-        message = "User created successfully";
-        notification.showAlertNotification(message, true);
-        return result;
-      } else {
-        notification.showAlertNotification(message, false);
-        return null;
+      if (res.status === 200 || res.status === 201) {
+        return res.data;
       }
+
+      toast.error("Failed to create user");
+      return null;
     } catch (error) {
-      notification.showAxiosErrorAlert(error);
+      toast.error(error?.response?.data?.message || "Error creating user");
       return null;
     }
   }
 
-  async updateUserGeneralDetails(data) {
+  // =====================================================
+  // UPDATE USER
+  // =====================================================
+
+  async updateUser(userId, data) {
     try {
-      const result = await ApiClient.put("/customer/user", data);
-      const statusCode = result.status ?? 0;
+      const res = await ApiClient.put(`/masters/users/${userId}/`, data);
 
-      let message = result.data?.message ?? "Something went wrong";
-
-      if (statusCode === 200 || statusCode === 201) {
-        message = "User updated successfully";
-        notification.showAlertNotification(message, true);
-        return result;
-      } else {
-        notification.showAlertNotification(message, false);
-        return null;
+      if (res.status === 200) {
+        return res.data;
       }
+
+      toast.error("Failed to update user");
+      return null;
     } catch (error) {
-      notification.showAxiosErrorAlert(error);
+      toast.error(error?.response?.data?.message || "Error updating user");
       return null;
     }
   }
+  // =====================================================
+// DELETE USER
+// =====================================================
+async deleteUser(userId) {
+  try {
+    const res = await ApiClient.delete(
+      `/masters/users/${userId}/` // ✅ trailing slash
+    );
 
-  async updateUserRoleDetails(data) {
-    try {
-      const result = await ApiClient.put("/customer/user/role", data);
-      const statusCode = result.status ?? 0;
-
-      let message = result.data?.message ?? "Something went wrong";
-
-      if (statusCode === 200 || statusCode === 201) {
-        message = "User updated successfully";
-        notification.showAlertNotification(message, true);
-        return result;
-      } else {
-        notification.showAlertNotification(message, false);
-        return null;
-      }
-    } catch (error) {
-      notification.showAxiosErrorAlert(error);
-      return null;
+    if (res.status === 200 || res.status === 204) {
+      toast.success("User deleted successfully");
+      return true;
     }
+
+    toast.error("Failed to delete user");
+    return false;
+  } catch (error) {
+    console.error("Delete user error:", error?.response?.data || error);
+    toast.error(error?.response?.data?.message || "Error deleting user");
+    return false;
   }
-
-  // ===========================
-  // USER GROUP
-  // ===========================
-
-  async fetchUserGroup(params) {
-    try {
-      const result = await ApiClient.get("/customer/user/group", { params });
-      const statusCode = result.status ?? 0;
-      const message = result.data?.message ?? "Something went wrong";
-
-      if (statusCode === 200 || statusCode === 201) {
-        return result;
-      } else {
-        notification.showAlertNotification(message, false);
-        return null;
-      }
-    } catch (error) {
-      notification.showAxiosErrorAlert(error);
-      return null;
-    }
-  }
-
-  async createUserGroup(data) {
-    try {
-      const result = await ApiClient.post("/customer/user/group", data);
-      const statusCode = result.status ?? 0;
-
-      let message = result.data?.message ?? "Something went wrong";
-
-      if (statusCode === 200 || statusCode === 201) {
-        message = "User group created successfully";
-        notification.showAlertNotification(message, true);
-        return result;
-      } else {
-        notification.showAlertNotification(message, false);
-        return null;
-      }
-    } catch (error) {
-      notification.showAxiosErrorAlert(error);
-      return null;
-    }
-  }
-
-  async updateUserGroup(data) {
-    try {
-      const result = await ApiClient.put("/customer/user/group", data);
-      const statusCode = result.status ?? 0;
-
-      let message = result.data?.message ?? "Something went wrong";
-
-      if (statusCode === 200 || statusCode === 201) {
-        message = "User Group updated successfully";
-        notification.showAlertNotification(message, true);
-        return result;
-      } else {
-        notification.showAlertNotification(message, false);
-        return null;
-      }
-    } catch (error) {
-      notification.showAxiosErrorAlert(error);
-      return null;
-    }
-  }
-
-  async removeUserGroup(id) {
-    try {
-      const result = await ApiClient.put(`/customer/user/removeGroup/${id}`);
-      const statusCode = result.status ?? 0;
-
-      let message = result.data?.message ?? "Something went wrong";
-
-      if (statusCode === 200 || statusCode === 201) {
-        message = "User group removed successfully";
-        notification.showAlertNotification(message, true);
-        return result;
-      } else {
-        notification.showAlertNotification(message, false);
-        return null;
-      }
-    } catch (error) {
-      notification.showAxiosErrorAlert(error);
-      return null;
-    }
-  }
-
-  // ===========================
-  // KEY MAPPING
-  // ===========================
-
-  async fetchUnMappedUsers() {
-    try {
-      const result = await ApiClient.get("/customer/userKey/user");
-      const statusCode = result.status ?? 0;
-
-      const message = result.data?.message ?? "Something went wrong";
-
-      if (statusCode === 200 || statusCode === 201) {
-        return result;
-      } else {
-        notification.showAlertNotification(message, false);
-        return null;
-      }
-    } catch (error) {
-      notification.showAxiosErrorAlert(error);
-      return null;
-    }
-  }
-
-  async fetchUserKeyMappings(params) {
-    try {
-      const result = await ApiClient.get("customer/userKey", { params });
-      const statusCode = result.status ?? 0;
-
-      const message = result.data?.message ?? "Something went wrong";
-
-      if (statusCode === 200 || statusCode === 201) {
-        return result;
-      } else {
-        notification.showAlertNotification(message, false);
-        return null;
-      }
-    } catch (error) {
-      notification.showAxiosErrorAlert(error);
-      return null;
-    }
-  }
-
-  async createUserKeyMapping(data) {
-    try {
-      const result = await ApiClient.post("customer/userKey", data);
-      const statusCode = result.status ?? 0;
-
-      let message = result.data?.message ?? "Something went wrong";
-
-      if (statusCode === 200 || statusCode === 201) {
-        message = "UserKey mapped successfully";
-        notification.showAlertNotification(message, true);
-        return result;
-      } else {
-        notification.showAlertNotification(message, false);
-        return null;
-      }
-    } catch (error) {
-      notification.showAxiosErrorAlert(error);
-      return null;
-    }
-  }
-
-  async removeUserKeyMapping(data) {
-    try {
-      const result = await ApiClient.delete("customer/userKey", {
-        params: data,
-      });
-
-      const statusCode = result.status ?? 0;
-
-      let message = result.data?.message ?? "Something went wrong";
-
-      if (statusCode === 200 || statusCode === 201) {
-        message = "UserKey mapping removed successfully";
-        notification.showAlertNotification(message, true);
-        return result;
-      } else {
-        notification.showAlertNotification(message, false);
-        return null;
-      }
-    } catch (error) {
-      notification.showAxiosErrorAlert(error);
-      return null;
-    }
-  }
-
-  // ===========================
-  // ROLE BASED WEBPAGE
-  // ===========================
-  async fetchWebPageByRoleId(params) {
-    try {
-      const result = await ApiClient.get("customer/role/details", { params });
-
-      const statusCode = result.status ?? 0;
-      const message = result.data?.message ?? "Something went wrong";
-
-      if (statusCode === 200 || statusCode === 201) {
-        return result;
-      } else {
-        notification.showAlertNotification(message, false);
-        return null;
-      }
-    } catch (error) {
-      notification.showAxiosErrorAlert(error);
-      return null;
-    }
-  }
-
-  // ===========================
-  // UPDATE PASSWORD
-  // ===========================
-  async updatePassword(data) {
-    try {
-      const result = await ApiClient.put(
-        "customer/user/changePassword",
-        data
-      );
-
-      const statusCode = result.status ?? 0;
-      const message =
-        result.data?.message ?? "Password updated successfully";
-
-      if (statusCode === 200 || statusCode === 201) {
-        notification.showAlertNotification(message, true);
-        return result;
-      } else {
-        notification.showAlertNotification(message, false);
-        return null;
-      }
-    } catch (error) {
-      notification.showAxiosErrorAlert(error);
-      return null;
-    }
   }
 }
 

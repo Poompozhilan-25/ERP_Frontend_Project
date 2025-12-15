@@ -74,7 +74,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.clear();
     setAuthUser(null);
-    navigate("/sign-in");
+    navigate("/signin");
   };
 
   const getUser = () => authUser;

@@ -202,7 +202,7 @@ export default function signup() {
             </button>
             <p id="changer-link-signup">
               Already Have an Account?{" "}
-              <Link to={"/sign-in"} className="link-up">
+              <Link to={"/signin"} className="link-up">
                 Sign in
               </Link>
             </p>

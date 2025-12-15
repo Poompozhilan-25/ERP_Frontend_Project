@@ -369,7 +369,7 @@ export default function Onboard() {
 
         if (!token) {
           toast.error("No token found. Please log in.");
-          navigate("/sign-in");
+          navigate("/signin");
           return;
         }
 
@@ -426,7 +426,7 @@ export default function Onboard() {
           const errorMessage = err.response?.data?.error || "Failed to delete candidate";
           toast.error(errorMessage);
           if (errorMessage.includes("Only super admins can delete candidates")) {
-            navigate("/sign-in"); // Redirect to login if user lacks permission
+            navigate("/signin"); // Redirect to login if user lacks permission
           }
         });
     }

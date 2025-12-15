@@ -4,13 +4,13 @@ import "react-toastify/dist/ReactToastify.css";
 import "./createNewProduct.css";
 import CategoryInput from "./customInput";
 import CustomCheckboxInput from "./customCheckboxInput";
-import NewproductCategory from "../manageProducts/newproductCategory/newproductCategory";
-import NewproductTaxCode from "../manageProducts/newproduct-tax-code/newproductTaxCode";
-import NewproductUOM from "../manageProducts/newproduct-uom/newproductUOM";
-import NewproductWarehouse from "../manageProducts/newproductWarehouse/newproductWarehouse";
-import NewproductSupplier from "../manageProducts/newproductSupplier/newproductSupplier";
-import NewproductSize from "../manageProducts/newproductSize/newproductSize";
-import NewproductColor from "../manageProducts/newproductColor/newproductColor";
+import NewproductCategory from "./newproductCategory/newproductCategory";
+import NewproductTaxCode from "./newproduct-tax-code/newproductTaxCode";
+import NewproductUOM from "./newproduct-uom/newproductUOM";
+import NewproductWarehouse from "./newproductWarehouse/newproductWarehouse";
+import NewproductSupplier from "./newproductSupplier/newproductSupplier";
+import NewproductSize from "./newproductSize/newproductSize";
+import NewproductColor from "./newproductColor/newproductColor";
 import axios from "axios";
 
 export default function createNewProduct({

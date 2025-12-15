@@ -77,7 +77,7 @@
 //       />
 //     </div>
 //   ) : (
-//     <Navigate to={"/sign-in"} />
+//     <Navigate to={"/signin"} />
 //   );
 // }
 import React, { useEffect, useState } from "react";

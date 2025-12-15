@@ -1,48 +1,59 @@
 // import axios from "axios";
 // import { API_URL } from "../utills/utills";
 
+// const BASE = (API_URL || "").replace(/\/+$/, "");
+
 // const ApiClient = axios.create({
-//   baseURL: API_URL,
-//   timeout: 10000,
+//   baseURL: BASE,
+//   timeout: 20000,
 // });
 
+// // REQUEST INTERCEPTOR
 // ApiClient.interceptors.request.use(
 //   (config) => {
-//     // Direct token retrieval from localStorage (or skip if none)
-//     const token = localStorage.getItem("token") || "";
+//     // Attach token
+//     console.log("Axios request config:", config);
+//     const token = localStorage.getItem("token");
 //     if (token) {
 //       config.headers = {
 //         ...config.headers,
-//         Authorization: `Bearer ${token}`,
+//         Authorization: `Token ${token}`,
 //         Accept: "application/json",
 //         "Content-Type": "application/json",
 //       };
 //     }
+
+//     /**
+//      * ⭐ IMPORTANT ⭐
+//      * Many enterprise backends accept GET requests with a request body.
+//      * We convert GET + params → GET + data (payload shown in Network tab)
+//      */
+//     if (config.method === "get" && config.params) {
+//       config.data = config.params;  // move params to payload
+//       delete config.params;
+//     }
+
 //     return config;
 //   },
-//   (error) => {
-//     console.error("API Request setup failed", error);
-//     return Promise.reject(error);
-//   }
+//   (error) => Promise.reject(error)
 // );
 
+// // RESPONSE INTERCEPTOR
 // ApiClient.interceptors.response.use(
 //   (response) => response,
 //   (error) => {
 //     if (error.response) {
-//       const { status, data } = error.response;
-//       if ([401, 403].includes(status)) {
-//         localStorage.clear();
-//         const message =
-//           status === 401
-//             ? "Your session has expired. Login again to start a new session."
-//             : (data?.error || "Access forbidden.");
-//         console.warn(message);
-//         window.location.href = "/sign-in";
+//       const status = error.response.status;
+
+//       if (status === 401 || status === 403) {
+//         localStorage.removeItem("token");
+//         localStorage.removeItem("user");
+//         window.location.href = "/signin";
 //       }
 //     } else {
 //       console.error("Network error (no response)", error);
 //     }
+
 //     return Promise.reject(error);
 //   }
 // );
@@ -51,56 +62,50 @@
 import axios from "axios";
 import { API_URL } from "../utills/utills";
 
+const BASE = (API_URL || "").replace(/\/+$/, "");
+
 const ApiClient = axios.create({
-  baseURL: API_URL,
-  timeout: 10000,
+  baseURL: BASE,
+  timeout: 20000,
+  headers: {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  },
 });
 
-// Add token to all requests
+// REQUEST INTERCEPTOR
 ApiClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token");        // ensure correct key
-    console.log("Using token in request:", token);
+    console.log("Axios request:", config.method?.toUpperCase(), config.url);
+
+    const token = localStorage.getItem("token");
     if (token) {
-      config.headers = {
-        ...config.headers,
-        Authorization: `Token ${token}`,                 // correct “Bearer ” scheme
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      };
+      config.headers.Authorization = `Token ${token}`;
     }
+
     return config;
   },
-  (error) => {
-    console.error("API Request setup failed", error);
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
-// Response interceptor to handle auth errors
+// RESPONSE INTERCEPTOR
 ApiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response) {
-      const { status, data } = error.response;
-      if ([401, 403].includes(status)) {
-        // only clear auth keys, not entire storage if you keep other data
+      const status = error.response.status;
+
+      if (status === 401 || status === 403) {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
-        const message =
-          status === 401
-            ? "Your session has expired. Login again to start a new session."
-            : (data?.error || "Access forbidden.");
-        console.warn(message);
-        // Redirect to sign in page
-        // window.location.href = "/sign in";
+        window.location.href = "/signin";
       }
     } else {
-      console.error("Network error (no response)", error);
+      console.error("Network error", error);
     }
+
     return Promise.reject(error);
   }
 );
 
 export default ApiClient;
-
