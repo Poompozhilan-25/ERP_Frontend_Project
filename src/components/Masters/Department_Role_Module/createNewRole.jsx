@@ -796,7 +796,6 @@ export default function CreateNewRole({
                 }
               />
             </div>
-
             <div className="create-role-box">
               <label>Description<sup>*</sup></label>
               <input

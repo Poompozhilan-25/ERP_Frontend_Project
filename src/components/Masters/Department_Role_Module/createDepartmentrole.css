@@ -97,6 +97,7 @@
 }
 .display-role-cointainer-title > nav > button {
   padding: 8px 10px;
+  margin-bottom: 5px;
   border-radius: 6px;
   background: rgba(35, 78, 112, 1);
   color: #fff;

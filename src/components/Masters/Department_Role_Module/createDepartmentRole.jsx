@@ -1348,13 +1348,13 @@ export default function CreateDepartmentRole({
         showDepartmentRole ? "block" : ""
       }`}
     >
-      <svg
+      {/* <svg
         className="x-logo-create-department"
         viewBox="0 0 384 512"
         onClick={onClose}
       >
         <path d="M342.6 150.6L192 301.3 41.4 150.6" />
-      </svg>
+      </svg> */}
 
       <div className="create-department-head">
         <p>{editDept?.id ? "Edit" : "Create New"} Department</p>
